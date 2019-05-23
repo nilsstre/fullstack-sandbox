@@ -75,14 +75,43 @@ routs.get('/todos/', (req, res) => {
  * API endpoint that returns the todo list specified by list_id
  */
 routs.get('/todos/:list_id', (req, res) => {
-    const id = parseInt(req.params.list_id, 10)
-    if (isNaN(id)) {
+    const list_id = parseInt(req.params.list_id, 10)
+    if (isNaN(list_id)) {
         res.status(400).send({
             success: 'false',
             message: 'List_id must be an integer'
         })
     } else {
-        getList(req, res, id)
+        getList(req, res, list_id)
+    }
+})
+
+routs.post('/todos/:list_id', (req, res) => {
+    const list_id = parseInt(req.params.list_id, 10)
+    if (isNaN(list_id)) {
+        res.status(400).send({
+            success: 'false',
+            message: 'List_id must be an integer'
+        })
+    } else if (!req.body.description)  {
+        return res.status(400).send({
+            success: 'false',
+            message: 'A description is required for the todo'
+        })
+    } else if (!req.body.complete_time) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'A complete time is required for the todo'
+        })
+    } else if (!req.body.completed) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'Status for completed has to be set for the todo'
+        })
+    } else {
+        const temp_todo = {
+
+        }
     }
 })
 
