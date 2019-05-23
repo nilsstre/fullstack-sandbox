@@ -1,10 +1,11 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+const api = require('./api/');
 const app = express()
-
 const PORT = 3001
 
-app.get('/', (req, res) => res.send('Hello World!'))
-const api = require('./api/');
+app.use(bodyParser.json()); // Must for some reason be called first
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/api', api)
 
