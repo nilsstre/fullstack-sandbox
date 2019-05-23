@@ -1,7 +1,7 @@
 const todos =  [
     {
         list_id: 1,
-        todos: [
+        list_todos: [
             {
                 todo_id: 1,
                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -15,7 +15,7 @@ const todos =  [
     },
     {
         list_id: 2,
-        todos: [
+        list_todos: [
             {
                 todo_id: 1,
                 description: 'Ut enim ad minim veniam.',
