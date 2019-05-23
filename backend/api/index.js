@@ -86,6 +86,10 @@ routs.get('/todos/:list_id', (req, res) => {
     }
 })
 
+/**
+ * API endpoint for adding todos
+ * TODO split into a function
+ */
 routs.post('/todos/:list_id', (req, res) => {
     const list_id = parseInt(req.params.list_id, 10)
     if (isNaN(list_id)) {
@@ -109,9 +113,25 @@ routs.post('/todos/:list_id', (req, res) => {
             message: 'Status for completed has to be set for the todo'
         })
     } else {
-        const temp_todo = {
-
-        }
+        data.map((todos) => {
+            if (todos.list_id == list_id) {
+                temp_todo = {
+                    todo_id: todos.list_todos.length + 1, // TODO fix unique todo_id
+                    description: req.body.description,
+                    complete_time: req.body.complete_time,
+                    completed: req.body.completed
+                }
+                todos.list_todos.push(temp_todo)
+                return res.status(201).send({
+                    success: 'true',
+                    message: 'The todo was added with todo_id ' + todos.list_todos.length
+                })
+            }
+        })
+        res.status(404).send({
+            success: 'false',
+            message: 'There exists no todo list with the list_id: ' + list_id
+        })
     }
 })
 
