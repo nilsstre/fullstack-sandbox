@@ -11,21 +11,25 @@ const routs = express.Router()
  */
 function getList(req, res, list_id = undefined) {
     if (list_id) {
+        let listFound
         data.map((todos) => {
             if (todos.list_id == list_id) {
+                listFound = true
                 return res.status(200).send({
                     success: 'true',
-                    message: 'Todo list with list_id: ' + list_id + ' was retrieved successfully',
+                    message: 'The todo list with list_id: ' + list_id + ' was retrieved successfully',
                     todos: todos
                 })
             }
         })
-        return res.status(404).send({
-            success: 'false',
-            message: 'There exists no todo list with the list_id: ' + id
-        });
+        if (!listFound) {
+            return res.status(404).send({
+                success: 'false',
+                message: 'There exists no todo list with the list_id: ' + list_id
+            })
+        }
     } else {
-        res.status(200).send({
+        return res.status(200).send({
             success: 'true',
             message: 'All Todo lists were retrieved successfully',
             todos: data
@@ -52,15 +56,12 @@ function deleteTodo(list_id, todo_id, req, res) {
                     })
                 }
             })
-            return res.status(404).send({
-                success: 'false',
-                message: 'There exists no todo with the todo_id: ' + todo_id + ' in the todo list with the todo_id: ' + todo_id
-            })
+
         }
     })
-    res.status(404).send({
+    return res.status(404).send({
         success: 'false',
-        message: 'There exists no todo list with the list_id: ' + list_id
+        message: 'There exists no todo with the todo_id: ' + todo_id + ' in the todo list with the todo_id: ' + todo_id
     })
 }
 
@@ -77,7 +78,7 @@ routs.get('/todos/', (req, res) => {
 routs.get('/todos/:list_id', (req, res) => {
     const list_id = parseInt(req.params.list_id, 10)
     if (isNaN(list_id)) {
-        res.status(400).send({
+        return res.status(400).send({
             success: 'false',
             message: 'List_id must be an integer'
         })
@@ -93,7 +94,7 @@ routs.get('/todos/:list_id', (req, res) => {
 routs.post('/todos/:list_id', (req, res) => {
     const list_id = parseInt(req.params.list_id, 10)
     if (isNaN(list_id)) {
-        res.status(400).send({
+        return res.status(400).send({
             success: 'false',
             message: 'List_id must be an integer'
         })
@@ -113,8 +114,10 @@ routs.post('/todos/:list_id', (req, res) => {
             message: 'Status for completed has to be set for the todo'
         })
     } else {
+        let todoFound
         data.map((todos) => {
             if (todos.list_id == list_id) {
+                todoFound = true
                 temp_todo = {
                     todo_id: todos.list_todos.length + 1, // TODO fix unique todo_id
                     description: req.body.description,
@@ -128,10 +131,12 @@ routs.post('/todos/:list_id', (req, res) => {
                 })
             }
         })
-        res.status(404).send({
-            success: 'false',
-            message: 'There exists no todo list with the list_id: ' + list_id
-        })
+        if (!todoFound) {
+            return res.status(404).send({
+                success: 'false',
+                message: 'There exists no todo with the todo_id: ' + todo_id + ' in list: ' + list_id
+            })
+        }
     }
 })
 
@@ -143,13 +148,79 @@ routs.delete('/todos/:list_id/:todo_id', (req, res) => {
     const todo_id = parseInt(req.params.todo_id, 10)
 
     if (isNaN(list_id) || isNaN(todo_id)) {
-        res.status(400).send({
+        return res.status(400).send({
             success: 'false',
             message: 'Both list_id and todo_id have to be integers'
         })
     } else {
         deleteTodo(list_id, todo_id, req, res)
     }
+})
+
+/**
+ * API endpoint for updating a todo
+ */
+routs.put('/todos/:list_id/:todo_id', (req, res) => {
+    const list_id = parseInt(req.params.list_id, 10)
+    const todo_id = parseInt(req.params.todo_id, 10)
+
+    if (isNaN(list_id) || isNaN(todo_id)) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'Both list_id and todo_id have to be integers'
+        })
+    } else if (!req.body.description)  {
+        return res.status(400).send({
+            success: 'false',
+            message: 'A description is required for the todo'
+        })
+    } else if (!req.body.complete_time) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'A complete time is required for the todo'
+        })
+    } else if (!req.body.completed) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'Status for completed has to be set for the todo'
+        })
+    } else {
+        let todoListFound
+        let todoFound
+        let foundIndex
+        data.map((todos) => {
+            if (todos.list_id == list_id) {
+                todos.list_todos.map((todo, index) => {
+                    if (todo.todo_id == todo_id) {
+                        todoListFound = todos
+                        todoFound = todo
+                        foundIndex = index
+                    }
+                })
+            }
+        })
+        if (!todoFound) {
+            return res.status(404).send({
+                success: 'false',
+                message: 'There is no todo with the todo_id: ' + todo_id + 'in todo list: ' + list_id
+            })
+        } else {
+            const todo_temp = {
+                todo_id: todoFound.todo_id,
+                description: req.body.description,
+                complete_time: req.body.complete_time,
+                completed: req.body.completed
+            }
+            todoListFound.list_todos.splice(foundIndex, 1, todo_temp)
+
+            return res.status(200).send({
+                success: 'true',
+                message: 'The todo with todo_id ' + todo_id + ' in todo list: ' + list_id + ' has been successfully updated',
+                todo_temp
+            })
+        }
+    }
+
 })
 
 module.exports = routs
