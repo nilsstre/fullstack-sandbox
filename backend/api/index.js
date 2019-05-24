@@ -30,9 +30,7 @@ function getList(req, res, list_id = undefined) {
         }
     } else {
         return res.status(200).send({
-            success: 'true',
-            message: 'All Todo lists were retrieved successfully',
-            todos: data
+            data
         })
     }
 }
@@ -69,6 +67,7 @@ function deleteTodo(list_id, todo_id, req, res) {
  * API endpoint that returns all todo lists
  */
 routs.get('/todos/', (req, res) => {
+    console.log("Request for todo list received")
     getList(req, res)
 })
 
@@ -169,20 +168,10 @@ routs.put('/todos/:list_id/:todo_id', (req, res) => {
             success: 'false',
             message: 'Both list_id and todo_id have to be integers'
         })
-    } else if (!req.body.description)  {
+    } else if (!req.body.description || !req.body.complete_time || !req.body.completed)  {
         return res.status(400).send({
             success: 'false',
-            message: 'A description is required for the todo'
-        })
-    } else if (!req.body.complete_time) {
-        return res.status(400).send({
-            success: 'false',
-            message: 'A complete time is required for the todo'
-        })
-    } else if (!req.body.completed) {
-        return res.status(400).send({
-            success: 'false',
-            message: 'Status for completed has to be set for the todo'
+            message: ''
         })
     } else {
         let todoListFound
@@ -207,9 +196,9 @@ routs.put('/todos/:list_id/:todo_id', (req, res) => {
         } else {
             const todo_temp = {
                 todo_id: todoFound.todo_id,
-                description: req.body.description,
-                complete_time: req.body.complete_time,
-                completed: req.body.completed
+                description: req.body.description || todoFound.description,
+                complete_time: req.body.complete_time || todoFound.complete_time,
+                completed: req.body.completed || todoFound.completed
             }
             todoListFound.list_todos.splice(foundIndex, 1, todo_temp)
 
