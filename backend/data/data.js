@@ -1,6 +1,7 @@
 const todos =  [
     {
         list_id: 1,
+        list_name: 'First list',
         list_todos: [
             {
                 todo_id: 1,
@@ -17,6 +18,7 @@ const todos =  [
     },
     {
         list_id: 2,
+        list_name: 'Second list',
         list_todos: [
             {
                 todo_id: 1,
