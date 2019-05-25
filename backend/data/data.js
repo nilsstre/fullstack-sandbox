@@ -1,17 +1,17 @@
-let todos = [{
+const todos = [{
     '1': {
         id: 1,
         name: 'First list',
         todos: [
             {
                 description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                complete_time: '2019-05-28T18:25:43.511Z',
-                completed: false
+                complete_time: 1558823480937,
+                completed: true
             },
             {
                 description: 'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                complete_time: '2019-05-29T18:25:43.511Z',
-                completed: false
+                complete_time: 1558823480937,
+                completed: true
             }]
     },
     '2': {
@@ -20,12 +20,12 @@ let todos = [{
         todos: [
             {
                 description: 'Ut enim ad minim veniam.',
-                complete_time: '2019-05-28T18:25:43.511Z',
+                complete_time: 1558823480937,
                 completed: false
             },
             {
                 description: 'Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                complete_time: '2019-05-29T18:25:43.511Z',
+                complete_time: 1558823480937,
                 completed: false
             }]
     }
