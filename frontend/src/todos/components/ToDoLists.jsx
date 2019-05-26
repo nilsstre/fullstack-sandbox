@@ -12,7 +12,7 @@ import axios from 'axios'
 
 
 const sendList = (list) => {
-    axios.post('http://localhost:3001/api/todos', list).catch(error => {
+    axios.post('http://localhost:3001/api/todos', [list]).catch(error => {
         console.error('Error while sending list to server, error: ' + error)
         alert("There was an error while seo")
     })
