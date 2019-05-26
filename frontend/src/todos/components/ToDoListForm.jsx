@@ -8,6 +8,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import AddIcon from '@material-ui/icons/Add'
 import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
+import { ReactComponent as Checkmark } from "../icons/checkmark.svg";
 import { TextField } from '../../shared/FormFields'
 
 const useStyles = makeStyles({
@@ -46,17 +47,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     saveToDoList(toDoList.id, { todos })
   }
 
-  const handleComplete = (checked, index) => {
-    setTodos([ // immutable update
-      ...todos.slice(0, index),
-      {description: todos[index].description, complete_time: todos[index].complete_time, completed: checked},
-      ...todos.slice(index + 1)
-    ])
-    handleSubmit()
-  }
-
   const handleChange = (event, index) => {
-    setTodos([ // immutable update
+    setTodos([
       ...todos.slice(0, index),
       {description: event.target.value, complete_time: todos[index].complete_time, completed: todos[index].completed},
       ...todos.slice(index + 1)
@@ -64,12 +56,12 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     clearTimeout(timer);
     timer = setTimeout(function () {
       handleSubmit(event)
-    }, 1000)
+    }, 1200)
   }
 
-  const handleAdd = (event) => {
+  const handleAdd = () => {
     setTodos([...todos, {description: "", complete_time: Date.now(), completed: false}])
-    handleSubmit(event)
+    handleSubmit()
   }
 
 
@@ -77,10 +69,11 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
       <Card className={classes.card}>
         <CardContent>
           <Typography variant='headline' component='h2'>
+            {toDoList.name + " "}
             {todos.filter(t => !t.completed).length === 0
-                ? <s>{toDoList.name}</s>
-                : toDoList.name}
+                ? <Checkmark/> : ""}
           </Typography>
+
           <form onSubmit={handleSubmit} className={classes.form}>
             {todos.map((todo, index) => (
                 <div key={index} className={classes.todoLine}>
@@ -96,7 +89,10 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                   <Checkbox
                       checked={todo.completed}
                       inputProps={{ 'aria-label': 'Checkbox A' } }
-                      onChange={(event, checked) => handleComplete(checked, index)}
+                      onChange={(index) => {
+                        todo.completed = !todo.completed
+                        handleSubmit()
+                      }}
                   />
                   <Button
                       size='small'
@@ -107,6 +103,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                           ...todos.slice(0, index),
                           ...todos.slice(index + 1)
                         ])
+                        handleSubmit()
                       }}
                   >
                     <DeleteIcon />
