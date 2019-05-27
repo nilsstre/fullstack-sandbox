@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete'
+import TimerIcon from '@material-ui/icons/Timer'
 import AddIcon from '@material-ui/icons/Add'
 import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
 import { ReactComponent as Checkmark } from "../icons/checkmark.svg";
 import { TextField } from '../../shared/FormFields'
+import Modal from './Modal'
+
 
 const useStyles = makeStyles({
   card: {
@@ -37,10 +40,17 @@ let timer
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
   const classes = useStyles()
   const [todos, setTodos] = useState(toDoList.todos)
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(
+      () => {
+        setTodos(toDoList.todos);
+      },
+      [toDoList.id]
+  )
 
   const handleSubmit = event => {
     console.log("handleSubmit")
-
     if (typeof event !== "undefined")
       event.preventDefault()
 
@@ -48,22 +58,29 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
   }
 
   const handleChange = (event, index) => {
-    setTodos([
-      ...todos.slice(0, index),
+    console.log('input before: ', event.target.value)
+    const temp_todos = [...todos.slice(0, index),
       {description: event.target.value, complete_time: todos[index].complete_time, completed: todos[index].completed},
-      ...todos.slice(index + 1)
-    ])
+      ...todos.slice(index + 1)]
+    setTodos(temp_todos)
     clearTimeout(timer);
     timer = setTimeout(function () {
       handleSubmit(event)
     }, 1200)
   }
 
-  const handleAdd = () => {
-    setTodos([...todos, {description: "", complete_time: Date.now(), completed: false}])
+  const addTodo = () => {
+    let tempTodo= {description: "", complete_time: Date.now(), completed: false}
+    setTodos([
+      ...todos,
+      tempTodo
+    ])
     handleSubmit()
   }
 
+  const toggleModal = () => {
+    setIsOpen(!isOpen)
+  }
 
   return (
       <Card className={classes.card}>
@@ -89,20 +106,33 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                   <Checkbox
                       checked={todo.completed}
                       inputProps={{ 'aria-label': 'Checkbox A' } }
-                      onChange={(index) => {
+                      onChange={() => {
                         todo.completed = !todo.completed
                         handleSubmit()
                       }}
                   />
                   <Button
+                      size={"small"}
+                      color={"secondary"}
+                      className={classes.standardSpace}
+                      onClick={() => {
+                        console.log("Set timer")
+                        setIsOpen(true)
+                      }}
+                    >
+                    <TimerIcon />
+                  </Button>
+                  <Modal show={isOpen}
+                         onClose={toggleModal}>
+                    Here's some content for the modal
+                  </Modal>
+                  <Button
                       size='small'
                       color='secondary'
                       className={classes.standardSpace}
                       onClick={() => {
-                        setTodos([ // immutable delete
-                          ...todos.slice(0, index),
-                          ...todos.slice(index + 1)
-                        ])
+                        todos.splice(index, 1);
+                        setTodos(todos);
                         handleSubmit()
                       }}
                   >
@@ -114,8 +144,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               <Button
                   type='button'
                   color='primary'
-                  onClick={(event) => {
-                    handleAdd(event)
+                  onClick={() => {
+                    addTodo()
                   }}
               >
                 Add Todo <AddIcon />

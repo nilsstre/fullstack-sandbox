@@ -12,13 +12,12 @@ import axios from 'axios'
 
 
 const sendList = (list) => {
+    console.log('Sent to sever: ', list)
     axios.post('http://localhost:3001/api/todos', [list]).catch(error => {
         console.error('Error while sending list to server, error: ' + error)
         alert("There was an error while seo")
     })
-
 }
-
 
 export const ToDoLists = ({ style }) => {
     const [toDoLists, setToDoLists] = useState({})
@@ -27,7 +26,7 @@ export const ToDoLists = ({ style }) => {
     const getList = () => {
         axios.get('http://localhost:3001/api/todos/').then(response => {
             response.data.data.map(t => {setToDoLists(t)
-            console.log(t)})
+            console.log('Retrieved from server: ', t)})
         })
             .catch(error => {console.error('Error while retrieving lists from server, error: ' + error)})
     }
@@ -69,10 +68,9 @@ export const ToDoLists = ({ style }) => {
                 const newList = {
                     ...toDoLists,
                     [id]: {...listToUpdate, todos}
-                };
+                }
 
                 sendList(newList)
-
                 setToDoLists(newList)
             }}
         />}
