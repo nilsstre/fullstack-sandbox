@@ -114,7 +114,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                       color={"secondary"}
                       className={classes.standardSpace}
                       onClick={() => {
-                        console.log("Set timer")
                         setIsOpen(true)
                       }}
                     >
