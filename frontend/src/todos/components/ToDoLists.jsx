@@ -8,67 +8,71 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
+import axios from 'axios'
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
-const getPersonalTodos = () => {
-  return sleep(1000).then(() => Promise.resolve({
-    '0000000001': {
-      id: '0000000001',
-      title: 'First List',
-      todos: ['First todo of first list!']
-    },
-    '0000000002': {
-      id: '0000000002',
-      title: 'Second List',
-      todos: ['First todo of second list!']
-    }
-  }))
+const sendList = (list) => {
+    console.log('Sent to sever: ', list)
+    axios.post('http://localhost:3001/api/todos', [list]).catch(error => {
+        console.error('Error while sending list to server, error: ' + error)
+        alert("There was an error while seo")
+    })
 }
 
 export const ToDoLists = ({ style }) => {
-  const [toDoLists, setToDoLists] = useState({})
-  const [activeList, setActiveList] = useState()
+    const [toDoLists, setToDoLists] = useState({})
+    const [activeList, setActiveList] = useState()
 
-  useEffect(() => {
-    getPersonalTodos()
-      .then(setToDoLists)
-  }, [])
-
-  if (!Object.keys(toDoLists).length) return null
-  return <Fragment>
-    <Card style={style}>
-      <CardContent>
-        <Typography
-          variant='headline'
-          component='h2'
-        >
-          My ToDo Lists
-        </Typography>
-        <List>
-          {Object.keys(toDoLists).map((key) => <ListItem
-            key={key}
-            button
-            onClick={() => setActiveList(key)}
-          >
-            <ListItemIcon>
-              <ReceiptIcon />
-            </ListItemIcon>
-            <ListItemText primary={toDoLists[key].title} />
-          </ListItem>)}
-        </List>
-      </CardContent>
-    </Card>
-    {toDoLists[activeList] && <ToDoListForm
-      key={activeList} // use key to make React recreate component to reset internal state
-      toDoList={toDoLists[activeList]}
-      saveToDoList={(id, { todos }) => {
-        const listToUpdate = toDoLists[id]
-        setToDoLists({
-          ...toDoLists,
-          [id]: { ...listToUpdate, todos }
+    const getList = () => {
+        axios.get('http://localhost:3001/api/todos/').then(response => {
+            response.data.data.map(t => {setToDoLists(t)
+            console.log('Retrieved from server: ', t)})
         })
-      }}
-    />}
-  </Fragment>
+            .catch(error => {console.error('Error while retrieving lists from server, error: ' + error)})
+    }
+
+    useEffect(() => {
+        getList()
+    }, [])
+
+    if (!Object.keys(toDoLists).length) return null
+    return <Fragment>
+        <Card style={style}>
+            <CardContent>
+                <Typography
+                    variant='headline'
+                    component='h2'
+                >
+                    My ToDo Lists
+                </Typography>
+                <List>
+                    {Object.keys(toDoLists).map((key) => <ListItem
+                        key={key}
+                        button
+                        onClick={() => setActiveList(key)}
+                    >
+                        <ListItemIcon>
+                            <ReceiptIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={toDoLists[key].name}/>
+                    </ListItem>)}
+                </List>
+            </CardContent>
+        </Card>
+        {toDoLists[activeList] && <ToDoListForm
+            key={activeList} // use key to make React recreate component to reset internal state
+            toDoList={toDoLists[activeList]}
+            saveToDoList={(id, { todos }) => {
+
+                const listToUpdate = toDoLists[id]
+                const newList = {
+                    ...toDoLists,
+                    [id]: {...listToUpdate, todos}
+                }
+
+                sendList(newList)
+                setToDoLists(newList)
+            }}
+        />}
+    </Fragment>
 }
