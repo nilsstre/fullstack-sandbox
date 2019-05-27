@@ -1,1 +1,1 @@
-[{"1":{"id":1,"name":"First list","todos":[{"description":"Hej Nils hur går det?","complete_time":1558960444178,"completed":true}]},"2":{"id":2,"name":"Second list","todos":[{"description":"Moa är en tjej","complete_time":1558960753957,"completed":false}]}}]
+[{"1":{"id":1,"name":"First list","todos":[{"description":"Hej Nils hur går det?","complete_time":1558960444178,"completed":true}]},"2":{"id":2,"name":"Second list","todos":[{"description":"Moa är en tjej","complete_time":1558960753957,"completed":true}]}}]
