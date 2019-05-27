@@ -13,7 +13,6 @@ import { ReactComponent as Checkmark } from "../icons/checkmark.svg";
 import { TextField } from '../../shared/FormFields'
 import Modal from './Modal'
 
-
 const useStyles = makeStyles({
   card: {
     margin: '1rem'
@@ -49,33 +48,32 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
       [toDoList.id]
   )
 
-  const handleSubmit = event => {
-    console.log("handleSubmit")
+  const handleSubmit = (event, todo_data) => {
     if (typeof event !== "undefined")
       event.preventDefault()
-
-    saveToDoList(toDoList.id, { todos })
+    saveToDoList(toDoList.id, { todos: todo_data })
   }
 
   const handleChange = (event, index) => {
-    console.log('input before: ', event.target.value)
-    const temp_todos = [...todos.slice(0, index),
+    console.log('input: ', event.target.value)
+    const todo_data = [...todos.slice(0, index),
       {description: event.target.value, complete_time: todos[index].complete_time, completed: todos[index].completed},
       ...todos.slice(index + 1)]
-    setTodos(temp_todos)
+
+    // Send a request to update the state
+    setTodos(todo_data)
+
     clearTimeout(timer);
     timer = setTimeout(function () {
-      handleSubmit(event)
-    }, 1200)
+      handleSubmit(event, todo_data)
+    }, 1200, todo_data)
   }
 
   const addTodo = () => {
-    let tempTodo= {description: "", complete_time: Date.now(), completed: false}
-    setTodos([
-      ...todos,
-      tempTodo
-    ])
-    handleSubmit()
+    let tempTodo = {description: "", complete_time: Date.now(), completed: false}
+    let temp_data = [...todos, tempTodo]
+    setTodos(temp_data)
+    handleSubmit(undefined, temp_data)
   }
 
   const toggleModal = () => {
@@ -108,7 +106,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                       inputProps={{ 'aria-label': 'Checkbox A' } }
                       onChange={() => {
                         todo.completed = !todo.completed
-                        handleSubmit()
+                        handleSubmit(undefined, todos)
                       }}
                   />
                   <Button
@@ -133,7 +131,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                       onClick={() => {
                         todos.splice(index, 1);
                         setTodos(todos);
-                        handleSubmit()
+                        handleSubmit(undefined, todos)
                       }}
                   >
                     <DeleteIcon />
