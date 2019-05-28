@@ -12,6 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import { ReactComponent as Checkmark } from "../icons/checkmark.svg";
 import { TextField } from '../../shared/FormFields'
 import Modal from './DeadLineModal'
+import {Tooltip} from "@material-ui/core";
 
 const useStyles = makeStyles({
   card: {
@@ -88,7 +89,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
             {todos.filter(t => !t.completed).length === 0
                 ? <Checkmark/> : ""}
           </Typography>
-
           <form onSubmit={handleSubmit} className={classes.form}>
             {todos.map((todo, index) => (
                 <div key={index} className={classes.todoLine}>
@@ -101,6 +101,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                       onChange={event => handleChange(event, index)}
                       className={classes.textField}
                   />
+                  <Tooltip title={todo.completed ? 'Mark todo as not completed' : 'Mark todo as completed'}>
                   <Checkbox
                       checked={todo.completed}
                       inputProps={{ 'aria-label': 'Checkbox A' } }
@@ -109,11 +110,13 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                         handleSubmit(undefined, todos)
                       }}
                   />
+                  </Tooltip>
                   <Modal show={isOpen}
                          onClose={toggleModal}>
                     Here's some content for the modal
                   </Modal>
-                  <Button
+                  <Tooltip title={'Delete todo'}>
+                    <Button
                       size='small'
                       color='secondary'
                       className={classes.standardSpace}
@@ -125,6 +128,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                   >
                     <DeleteIcon />
                   </Button>
+                  </Tooltip>
                 </div>
             ))}
             <CardActions>
