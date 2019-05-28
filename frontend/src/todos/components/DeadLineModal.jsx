@@ -7,6 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TimerIcon from '@material-ui/icons/Timer'
+import Tooltip from "@material-ui/core/Tooltip";
 
 function DeadLineModal() {
     const [open, setOpen] = React.useState(false);
@@ -28,9 +29,11 @@ function DeadLineModal() {
     }
     return (
         <div>
+            <Tooltip title={'Set deadline for todo'}>
             <Button onClick={handleClickOpen}>
                 <TimerIcon />
             </Button>
+            </Tooltip>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Set deadline</DialogTitle>
                 <DialogContent>
