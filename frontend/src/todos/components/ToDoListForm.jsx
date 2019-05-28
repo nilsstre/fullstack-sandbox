@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
 import { ReactComponent as Checkmark } from "../icons/checkmark.svg";
 import { TextField } from '../../shared/FormFields'
-import Modal from './Modal'
+import Modal from './DeadLineModal'
 
 const useStyles = makeStyles({
   card: {
@@ -109,16 +109,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                         handleSubmit(undefined, todos)
                       }}
                   />
-                  <Button
-                      size={"small"}
-                      color={"secondary"}
-                      className={classes.standardSpace}
-                      onClick={() => {
-                        setIsOpen(true)
-                      }}
-                    >
-                    <TimerIcon />
-                  </Button>
                   <Modal show={isOpen}
                          onClose={toggleModal}>
                     Here's some content for the modal
