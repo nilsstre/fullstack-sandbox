@@ -49,8 +49,7 @@ export const ToDoLists = ({ style }) => {
                     {Object.keys(toDoLists).map((key) => <ListItem
                         key={key}
                         button
-                        onClick={() => setActiveList(key)}
-                    >
+                        onClick={() => setActiveList(key)}>
                         <ListItemIcon>
                             <ReceiptIcon />
                         </ListItemIcon>
