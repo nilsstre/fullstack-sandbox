@@ -24,7 +24,6 @@ function DeadLineModal() {
         let today = new Date()
         let temp = today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : (today.getMonth() + 1)) + '-' + today.getDate() + 'T'
             + today.getHours() + ":" + today.getMinutes()
-        console.log(temp)
         return temp
     }
     return (

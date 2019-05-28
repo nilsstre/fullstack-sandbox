@@ -5,7 +5,6 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Button from '@material-ui/core/Button'
 import DeleteIcon from '@material-ui/icons/Delete'
-import TimerIcon from '@material-ui/icons/Timer'
 import AddIcon from '@material-ui/icons/Add'
 import Typography from '@material-ui/core/Typography'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -40,7 +39,6 @@ let timer
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
   const classes = useStyles()
   const [todos, setTodos] = useState(toDoList.todos)
-  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(
       () => {
@@ -56,7 +54,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
   }
 
   const handleChange = (event, index) => {
-    console.log('input: ', event.target.value)
     const todo_data = [...todos.slice(0, index),
       {description: event.target.value, complete_time: todos[index].complete_time, completed: todos[index].completed},
       ...todos.slice(index + 1)]
@@ -75,10 +72,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     let temp_data = [...todos, tempTodo]
     setTodos(temp_data)
     handleSubmit(undefined, temp_data)
-  }
-
-  const toggleModal = () => {
-    setIsOpen(!isOpen)
   }
 
   return (
@@ -111,9 +104,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                       }}
                   />
                   </Tooltip>
-                  <Modal show={isOpen}
-                         onClose={toggleModal}>
-                    Here's some content for the modal
+                  <Modal>
+
                   </Modal>
                   <Tooltip title={'Delete todo'}>
                     <Button
