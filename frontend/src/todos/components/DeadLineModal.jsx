@@ -43,9 +43,7 @@ function DeadLineModal() {
                         autoFocus
                         d="datetime-local"
                         type="datetime-local"
-                        defaultValue= {
-                            getTime()
-                        }
+                        defaultValue= {getTime()}
                         InputLabelProps={{
                             shrink: true,
                         }}

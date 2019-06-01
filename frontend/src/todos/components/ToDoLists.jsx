@@ -9,6 +9,9 @@ import ReceiptIcon from '@material-ui/icons/Receipt'
 import Typography from '@material-ui/core/Typography'
 import { ToDoListForm } from './ToDoListForm'
 import axios from 'axios'
+import {Button} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete"
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 
 const sendList = (list) => {
@@ -54,6 +57,16 @@ export const ToDoLists = ({ style }) => {
                             <ReceiptIcon />
                         </ListItemIcon>
                         <ListItemText primary={toDoLists[key].name}/>
+                        <ListItemSecondaryAction>
+                            <Button
+                                onClick = { () => {
+                                    const {[key]: idToRemove, ...rest} = toDoLists
+                                    setToDoLists(rest)
+                                    sendList(rest)
+                                }}>
+                                <DeleteIcon/>
+                            </Button>
+                        </ListItemSecondaryAction>
                     </ListItem>)}
                 </List>
             </CardContent>
@@ -68,7 +81,6 @@ export const ToDoLists = ({ style }) => {
                     ...toDoLists,
                     [id]: {...listToUpdate, todos}
                 }
-
                 sendList(newList)
                 setToDoLists(newList)
             }}
